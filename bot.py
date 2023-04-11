@@ -44,6 +44,34 @@ async def on_command_error(ctx, error):
         )
 
 
+# Remove the default help command
+bot.remove_command("help")
+
+
+# Define a custom help command
+@bot.command()
+async def help(ctx):
+    embed = discord.Embed(
+        title="Help",
+        description="List of commands for the bot",
+        color=discord.Color.blue(),
+    )
+
+    # Add fields for each command you want to display
+    embed.add_field(
+        name="$review",
+        value="Attach a PDF of your resume and the bot will give you feedback on how to improve it.",
+        inline=False,
+    )
+    embed.add_field(
+        name="$revise",
+        value="Send the bot a list of bullet points and it will revise them for you.",
+        inline=False,
+    )
+
+    await ctx.send(embed=embed)
+
+
 @bot.command()
 @commands.guild_only()
 @commands.is_owner()
@@ -244,19 +272,6 @@ async def reviseBullets(ctx, *, bullets):
             f"⚠️ There was an error processing your bullets {ctx.message.author.mention}. <@129678295057956864> will look into it."
         )
         print("⚠️ There was an error processing the bullets.")
-
-
-@bot.command(name="help")
-async def help(ctx):
-    await ctx.send(
-        "🤖 I'm a bot that helps you improve your resume. Send me a PDF of your resume and I'll give you feedback on how to improve it. Send me a list of bullet points and I'll revise them for you."
-        + "\n\n"
-        + "🤖 **Commands**"
-        + "\n"
-        + "• `$review` - Attach a PDF of your resume and I'll give you feedback on how to improve it."
-        + "\n"
-        + "• `$revise` - Send me a list of bullet points and I'll revise them for you."
-    )
 
 
 async def main():
