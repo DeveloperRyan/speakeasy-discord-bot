@@ -246,6 +246,19 @@ async def reviseBullets(ctx, *, bullets):
         print("⚠️ There was an error processing the bullets.")
 
 
+@bot.command(name="help")
+async def help(ctx):
+    await ctx.send(
+        "🤖 I'm a bot that helps you improve your resume. Send me a PDF of your resume and I'll give you feedback on how to improve it. Send me a list of bullet points and I'll revise them for you."
+        + "\n\n"
+        + "🤖 **Commands**"
+        + "\n"
+        + "• `$review` - Attach a PDF of your resume and I'll give you feedback on how to improve it."
+        + "\n"
+        + "• `$revise` - Send me a list of bullet points and I'll revise them for you."
+    )
+
+
 async def main():
     async with bot:
         # do you setup stuff if you need it here, then:
