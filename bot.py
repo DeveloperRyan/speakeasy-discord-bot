@@ -13,6 +13,7 @@ load_dotenv()
 
 OPENAI_KEY = os.environ.get("OPENAI_KEY")
 GUILD_ID = os.environ.get("GUILD_ID")
+BOT_TOKEN = os.environ.get("BOT_TOKEN")
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -239,7 +240,7 @@ async def main():
         bot.tree.copy_global_to(
             guild=discord.Object(id=GUILD_ID)
         )  # we copy the global commands we have to a guild, this is optional
-        await bot.start()
+        await bot.start(BOT_TOKEN)
 
 
 if __name__ == "__main__":
