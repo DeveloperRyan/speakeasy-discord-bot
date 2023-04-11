@@ -268,6 +268,7 @@ async def gptHandleBullets(bullets):
 
 
 @bot.command(name="revise")
+@commands.cooldown(1, 30, commands.BucketType.user)
 async def reviseBullets(ctx, *, bullets):
     if ctx.message is None:
         return
