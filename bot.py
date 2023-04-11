@@ -17,6 +17,9 @@ BOT_TOKEN = os.environ.get("BOT_TOKEN")
 
 intents = discord.Intents.default()
 intents.message_content = True
+intents.messages = True
+intents.guilds = True
+intents.guild_messages = True
 
 bot = commands.Bot(command_prefix="$", intents=intents)
 
@@ -211,7 +214,7 @@ async def reviewResume(ctx):
                 resume_text = await handleTextExtraction(ctx, file_path)
             except:
                 await pendingMessage.edit(
-                    f"⚠️ There was an error processing your resume {ctx.message.author.mention}. <@129678295057956864> will look into it."
+                    content=f"⚠️ There was an error processing your resume {ctx.message.author.mention}. <@129678295057956864> will look into it."
                 )
                 return
 
@@ -261,23 +264,28 @@ async def gptHandleBullets(bullets):
                 data = await response.json()
                 feedback = data["choices"][0]["message"]["content"]
                 print(feedback)
-                return feedback
+            return feedback
 
 
 @bot.command(name="revise")
-@commands.cooldown(1, 60, commands.BucketType.user)
 async def reviseBullets(ctx, *, bullets):
-    pending_message = await ctx.send("🤖 Thinking of revisions...")
+    if ctx.message is None:
+        return
+
+    pendingMessage = await ctx.send(
+        f"🤖 Thinking of revisions {ctx.message.author.mention}..."
+    )
 
     print("🤖 Fetching GPT-4 response")
     try:
         feedback = await gptHandleBullets(bullets)
-        await pending_message.edit(
-            f"🤖 Here are your revised bullets {ctx.author.mention}:\n\n{feedback}"
+        print("✅ GPT-4 response fetched", feedback)
+        await pendingMessage.edit(
+            content=f"🤖 Here are your revised bullets {ctx.author.mention}:\n\n{feedback}"
         )
     except:
-        await pending_message.edit(
-            f"⚠️ There was an error processing your bullets {ctx.message.author.mention}. <@129678295057956864> will look into it."
+        await pendingMessage.edit(
+            content=f"⚠️ There was an error processing your bullets {ctx.message.author.mention}. <@129678295057956864> will look into it."
         )
         print("⚠️ There was an error processing the bullets.")
 
