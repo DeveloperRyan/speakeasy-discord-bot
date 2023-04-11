@@ -120,6 +120,7 @@ async def download_file(url, headers=None, filepath="resume.pdf"):
     Raises:
         Exception: If the response status is not 200.
     """
+    print("📥 Downloading file...")
     async with aiohttp.ClientSession(headers=headers) as session:
         async with session.get(url) as response:
             if response.status == 200:
@@ -131,6 +132,7 @@ async def download_file(url, headers=None, filepath="resume.pdf"):
                         f.write(chunk)
             else:
                 raise Exception(f"Error downloading file: {response.status}")
+    print("✅ File downloaded")
 
 
 async def gptHandleResume(resume_text: str):
@@ -138,6 +140,7 @@ async def gptHandleResume(resume_text: str):
         "Content-Type": "application/json",
         "Authorization": OPENAI_KEY,
     }
+    print("🤖 Calling GPT...")
     async with aiohttp.ClientSession(headers=headers) as session:
         async with session.post(
             "https://api.openai.com/v1/chat/completions",
@@ -196,7 +199,12 @@ async def reviewResume(ctx):
         if attachment.filename.endswith(".pdf"):
             # Download the file
             file_name = secrets.token_urlsafe(16) + ".pdf"
-            file_path = f"/files/{file_name}"
+
+            # Check if the folder exists
+            if not os.path.exists("files"):
+                os.makedirs("files")
+
+            file_path = f"files/{file_name}"
             await download_file(attachment.url, filepath=file_path)
 
             try:
