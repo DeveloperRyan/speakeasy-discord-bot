@@ -36,6 +36,14 @@ async def on_message(message):
     await bot.process_commands(message)
 
 
+@bot.event
+async def on_command_error(ctx, error):
+    if isinstance(error, commands.CommandOnCooldown):
+        await ctx.send(
+            f"⌛ {ctx.message.author.mention} {round(error.retry_after, 2)} seconds left before you can use this command again."
+        )
+
+
 @bot.command()
 @commands.guild_only()
 @commands.is_owner()
@@ -149,6 +157,7 @@ async def handleTextExtraction(ctx, file_path: str):
 
 
 @bot.command(name="review")
+@commands.cooldown(1, 60 * 2, commands.BucketType.user)
 async def reviewResume(ctx):
     if ctx.message.attachments:
         pendingMessage = await ctx.send(
@@ -220,15 +229,18 @@ async def gptHandleBullets(bullets):
 
 
 @bot.command(name="revise")
+@commands.cooldown(1, 60, commands.BucketType.user)
 async def reviseBullets(ctx, *, bullets):
-    await ctx.send("🤖 Thinking of revisions...")
+    pending_message = await ctx.send("🤖 Thinking of revisions...")
 
     print("🤖 Fetching GPT-4 response")
     try:
         feedback = await gptHandleBullets(bullets)
-        await ctx.send(f"🤖 Here are your revised bullets:\n\n{feedback}")
+        await pending_message.edit(
+            f"🤖 Here are your revised bullets {ctx.author.mention}:\n\n{feedback}"
+        )
     except:
-        await ctx.send(
+        await pending_message.edit(
             f"⚠️ There was an error processing your bullets {ctx.message.author.mention}. <@129678295057956864> will look into it."
         )
         print("⚠️ There was an error processing the bullets.")
