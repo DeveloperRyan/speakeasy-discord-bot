@@ -151,7 +151,7 @@ async def gptHandleResume(resume_text: str):
                 "messages": [
                     {
                         "role": "system",
-                        "content": "You're a recruiter hiring for software engineering roles, you're helping candidates improve their resumes:\n###\n"
+                        "content": "You're a recruiter helping candidates improve their resumes:\n###\n"
                         + resume_text
                         + "\n###\nPlease provide concise feedback and actionable improvements to this resume, citing specific examples.\n"
                         + "Rules: Do not recommend adding a career summary at the top. Do not nitpick on spacing. Do not worry about formatting or styles. Don't worry about multiple roles at the same company. Only return a numbered list of actionable improvements, no additional text.",
